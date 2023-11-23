@@ -2,17 +2,32 @@ import React from 'react';
 import Form from 'react-bootstrap/Form';
 
 const LanguageSelector = ({ label, languages, onSelect }) => {
+  const availableLanguages = [
+    'English',
+    'Telugu',
+    'Hindi'
+  ]
+
   return (
-    <Form.Group>
-      <Form.Label>{label}</Form.Label>
-      <Form.Control as="select" onChange={(e) => onSelect(e.target.value)}>
-        {languages.map((lang) => (
-          <option key={lang} value={lang}>
-            {lang}
-          </option>
-        ))}
-      </Form.Control>
-    </Form.Group>
+    <div>
+      <h2>Language Preferences</h2>
+      <Form.Group className="my-3">
+          <Form.Label>Speak In</Form.Label>
+          <Form.Select>
+              {availableLanguages.map((option,ind) => (
+              <option value={option} key={ind}>{option}</option>
+              ))}
+          </Form.Select>
+      </Form.Group>
+      <Form.Group className="my-3">
+          <Form.Label>Listen In</Form.Label>
+          <Form.Select>
+              {availableLanguages.map((option,ind) => (
+              <option value={option} key={ind}>{option}</option>
+              ))}
+          </Form.Select>
+      </Form.Group>
+    </div>
   );
 };
 

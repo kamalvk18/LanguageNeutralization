@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import { Container, Row, Col, Form, InputGroup, Button } from 'react-bootstrap';
+import { useNavigate} from "react-router-dom";
 import { BsPerson } from 'react-icons/bs';
 import { BiUpArrow } from 'react-icons/bi';
+import LanguageSelector from './LanguageSelector';
 
 const ChatPage = () => {
+  const navigate=useNavigate();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
 
@@ -15,39 +18,18 @@ const ChatPage = () => {
     }
   };
 
-  const availableLanguages = [
-    'English',
-    'Telugu',
-    'Hindi'
-  ]
-
   return (
     <Container className="vh-100 d-flex flex-column">
       <Row className="flex-grow-1 justify-content-center mt-4">
         <Col xs={4}>
-            <h2>Language Preferences</h2>
-            <Form.Group className="my-3">
-                <Form.Label>Speak In</Form.Label>
-                <Form.Select>
-                    {availableLanguages.map((option,ind) => (
-                    <option value={option} key={ind}>{option}</option>
-                    ))}
-                </Form.Select>
-            </Form.Group>
-            <Form.Group className="my-3">
-                <Form.Label>Listen In</Form.Label>
-                <Form.Select>
-                    {availableLanguages.map((option,ind) => (
-                    <option value={option} key={ind}>{option}</option>
-                    ))}
-                </Form.Select>
-            </Form.Group>
+            <LanguageSelector/>
+            <Button variant="primary" size='sm' onClick={()=>{navigate('/')}}>Go Back</Button>
         </Col>
         <Col xs={8} className="d-flex flex-column">
           <div
             style={{
               border: '1px solid #ccc',
-              height: '600px',
+              height: '500px',
               overflowY: 'auto',
               marginBottom: '10px',
               padding: '10px',
