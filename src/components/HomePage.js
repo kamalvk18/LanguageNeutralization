@@ -7,10 +7,8 @@ const HomePage = () => {
   const navigate=useNavigate();
 
   const handleOptionClick = (optionType) => {
-    if (optionType === 'Chat') {
-      navigate('/chat');
-    } else {
-      navigate('/call')
+    if (optionType === 'connect') {
+      navigate('/connect');
     }
   };
 
@@ -18,7 +16,7 @@ const HomePage = () => {
     <Container className="text-center">
       <h1 className="my-4">Language Neutralizer</h1>
       <Row className="d-flex justify-content-center">
-          <Options optionType="Chat" onOptionClick={handleOptionClick} />
+          <Options optionType="connect" onOptionClick={handleOptionClick} />
       </Row>
       <p>Thriving to Bridge Language Gaps.</p>
     </Container>
