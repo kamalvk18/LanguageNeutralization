@@ -36,3 +36,25 @@
     transform: rotate(360deg);
   }
 }
+
+/* src/App.css */
+body {
+  background-color: #ffffff;
+  margin-top: 50px;
+}
+
+h1 {
+  color: #000000;
+}
+
+.card {
+  background-color: #ffffff;
+  height:150px;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  border-radius: 0.35rem;
+  transition: transform 0.3s ease-in-out;
+}
+
+.card:hover {
+  transform: scale(1.05);
+}
