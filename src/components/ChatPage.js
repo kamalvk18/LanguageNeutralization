@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Container, Row, Col, Form, InputGroup, Button } from 'react-bootstrap';
 import { useNavigate} from "react-router-dom";
 import { BsPerson } from 'react-icons/bs';
-import { BiUpArrow } from 'react-icons/bi';
+import { BiUpArrow, BiPhoneCall } from 'react-icons/bi';
 import LanguageSelector from './LanguageSelector';
 
 const ChatPage = () => {
@@ -81,6 +81,9 @@ const ChatPage = () => {
               />
               <Button type="submit" variant="light" style={{marginLeft: '5px'}}>
                 <BiUpArrow size={20} />
+              </Button>
+              <Button variant="light" style={{marginLeft: '5px'}} onClick={()=>alert('Calling...')}>
+                <BiPhoneCall size={20} />
               </Button>
             </InputGroup>
           </Form>

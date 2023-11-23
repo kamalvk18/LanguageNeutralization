@@ -12,15 +12,7 @@ const LanguageSelector = ({ label, languages, onSelect }) => {
     <div>
       <h2>Language Preferences</h2>
       <Form.Group className="my-3">
-          <Form.Label>Speak In</Form.Label>
-          <Form.Select>
-              {availableLanguages.map((option,ind) => (
-              <option value={option} key={ind}>{option}</option>
-              ))}
-          </Form.Select>
-      </Form.Group>
-      <Form.Group className="my-3">
-          <Form.Label>Listen In</Form.Label>
+          <Form.Label>Choose your language</Form.Label>
           <Form.Select>
               {availableLanguages.map((option,ind) => (
               <option value={option} key={ind}>{option}</option>
