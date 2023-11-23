@@ -29,6 +29,7 @@ const ChatPage = () => {
           <div
             style={{
               border: '1px solid #ccc',
+              backgroundColor: 'white',
               height: '500px',
               overflowY: 'auto',
               marginBottom: '10px',
