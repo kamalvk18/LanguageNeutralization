@@ -1,19 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Form, InputGroup, Button } from 'react-bootstrap';
 import { BsPerson } from 'react-icons/bs';
 import { BiUpArrow } from 'react-icons/bi';
+import socketIOClient from "socket.io-client";
+
+const socketio = socketIOClient('http://localhost:5000'); 
 
 const ChatPage = () => {
-  const [messages, setMessages] = useState([]);
-  const [newMessage, setNewMessage] = useState('');
+    const [messages, setMessages] = useState([]);
+    const [newMessage, setNewMessage] = useState('');
+  
+    useEffect(() => {
+      // Listen for existing chat messages
+      socketio.on('chat messages', (chatMessages) => {
+        setMessages(chatMessages);
+      });
+  
+      return () => {
+        // Clean up the socket connection when the component is unmounted
+        socketio.disconnect();
+      };
+    }, []);
+  
+    const handleSendMessage = (e) => {
+      e.preventDefault();
+      if (newMessage.trim() !== '') {
+        const message = {
+          text: newMessage,
+          sender: 'user', // Identify the sender (you can use different sender names for different instances)
+        };
+  
+        // Emit the message to the server
 
-  const handleSendMessage = (e) => {
-    e.preventDefault();
-    if (newMessage.trim() !== '') {
-      setMessages([...messages, newMessage]);
-      setNewMessage('');
-    }
-  };
+        socketio.emit('chat messages', [...messages ,message]);
+  
+        // Clear the input field
+        setNewMessage('');
+      }
+    };
 
   const availableLanguages = [
     'English',
@@ -82,7 +106,7 @@ const ChatPage = () => {
                       position: 'relative',
                     }}
                   >
-                    {message}
+                    {message.text}
                   </div>
                 </div>
               </div>
