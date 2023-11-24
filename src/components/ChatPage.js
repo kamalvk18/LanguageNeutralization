@@ -3,7 +3,6 @@ import { Container, Row, Col, Form, InputGroup, Button } from 'react-bootstrap';
 import { useNavigate} from "react-router-dom";
 import { BsPerson } from 'react-icons/bs';
 import { BiUpArrow, BiPhoneCall } from 'react-icons/bi';
-import LanguageSelector from './LanguageSelector';
 import socketIOClient from "socket.io-client";
 
 const socketio = socketIOClient.connect('http://localhost:5000'); 
@@ -14,8 +13,8 @@ const ChatPage = () => {
 
   useEffect(() => {
     // Listen for existing chat messages
-    socketio.on('chat messages', (chatMessages) => {
-      setMessages(chatMessages);
+    socketio.on('chat messages', (chat) => {
+      setMessages(prevMessages => [...prevMessages, chat]);
     });
 
     return () => {
@@ -34,7 +33,7 @@ const ChatPage = () => {
   
         // Emit the message to the server
 
-        socketio.emit('chat messages', [...messages ,message]);
+        socketio.emit('chat messages', message);
   
         // Clear the input field
         setNewMessage('');
@@ -51,7 +50,15 @@ const ChatPage = () => {
     <Container className="vh-100 d-flex flex-column">
       <Row className="flex-grow-1 justify-content-center mt-4">
         <Col xs={4}>
-            <LanguageSelector/>
+            <h2>Language Preferences</h2>
+            <Form.Group className="my-3">
+                <Form.Label>Choose your language</Form.Label>
+                <Form.Select>
+                    {availableLanguages.map((option,ind) => (
+                    <option value={option} key={ind}>{option}</option>
+                    ))}
+                </Form.Select>
+            </Form.Group>
             <Button variant="primary" size='sm' onClick={()=>{navigate('/')}}>Go Back</Button>
         </Col>
         <Col xs={8} className="d-flex flex-column">

@@ -1,7 +1,8 @@
+import sys
 from googletrans import Translator
 
-input_stmt = 'आप कैसे हैं ?'
-src_language = 'hindi'
+input_stmt = sys.argv[1]
+src_language = 'telugu'
 dest_laguage = 'english'
 
 translator = Translator()
