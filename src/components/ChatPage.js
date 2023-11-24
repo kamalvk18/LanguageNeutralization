@@ -6,7 +6,7 @@ import { BiUpArrow, BiPhoneCall } from 'react-icons/bi';
 import LanguageSelector from './LanguageSelector';
 import socketIOClient from "socket.io-client";
 
-const socketio = socketIOClient('http://localhost:5000'); 
+const socketio = socketIOClient.connect('http://localhost:5000'); 
 const ChatPage = () => {
   const navigate=useNavigate();
   const [messages, setMessages] = useState([]);
