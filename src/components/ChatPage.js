@@ -5,11 +5,12 @@ import { BsPerson } from 'react-icons/bs';
 import { BiUpArrow, BiPhoneCall } from 'react-icons/bi';
 import socketIOClient from "socket.io-client";
 
-const socketio = socketIOClient.connect('http://localhost:5000'); 
+const socketio = socketIOClient('http://localhost:5000'); 
 const ChatPage = () => {
   const navigate=useNavigate();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
+  const [language, setLanguage] = useState('english')
 
   useEffect(() => {
     // Listen for existing chat messages
@@ -28,7 +29,8 @@ const ChatPage = () => {
       if (newMessage.trim() !== '') {
         const message = {
           text: newMessage,
-          sender: 'user', // Identify the sender (you can use different sender names for different instances)
+          sender: socketio.id,
+          lang: language, // Identify the sender (you can use different sender names for different instances)
         };
   
         // Emit the message to the server
@@ -40,12 +42,8 @@ const ChatPage = () => {
       }
     };
 
-  const availableLanguages = [
-    'English',
-    'Telugu',
-    'Hindi'
-  ]
-
+  const availableLanguages = ['afrikaans', 'albanian', 'amharic', 'arabic', 'armenian', 'azerbaijani', 'basque', 'belarusian', 'bengali', 'bosnian', 'bulgarian', 'catalan', 'cebuano', 'chichewa', 'chinese (simplified)', 'chinese (traditional)', 'corsican', 'croatian', 'czech', 'danish', 'dutch', 'english', 'esperanto', 'estonian', 'filipino', 'finnish', 'french', 'frisian', 'galician', 'georgian', 'german', 'greek', 'gujarati', 'haitian creole', 'hausa', 'hawaiian', 'hebrew', 'hindi', 'hmong', 'hungarian', 'icelandic', 'igbo', 'indonesian', 'irish', 'italian', 'japanese', 'javanese', 'kannada', 'kazakh', 'khmer', 'korean', 'kurdish (kurmanji)', 'kyrgyz', 'lao', 'latin', 'latvian', 'lithuanian', 'luxembourgish', 'macedonian', 'malagasy', 'malay', 'malayalam', 'maltese', 'maori', 'marathi', 'mongolian', 'myanmar (burmese)', 'nepali', 'norwegian', 'odia', 'pashto', 'persian', 'polish', 'portuguese', 'punjabi', 'romanian', 'russian', 'samoan', 'scots gaelic', 'serbian', 'sesotho', 'shona', 'sindhi', 'sinhala', 'slovak', 'slovenian', 'somali', 'spanish', 'sundanese', 'swahili', 'swedish', 'tajik', 'tamil', 'telugu', 'thai', 'turkish', 'ukrainian', 'urdu', 'uyghur', 'uzbek', 'vietnamese', 'welsh', 'xhosa', 'yiddish', 'yoruba', 'zulu']
+  
   return (
     <Container className="vh-100 d-flex flex-column">
       <Row className="flex-grow-1 justify-content-center mt-4">
@@ -53,7 +51,7 @@ const ChatPage = () => {
             <h2>Language Preferences</h2>
             <Form.Group className="my-3">
                 <Form.Label>Choose your language</Form.Label>
-                <Form.Select>
+                <Form.Select value={language} onChange={e=>setLanguage(e.target.value)}>
                     {availableLanguages.map((option,ind) => (
                     <option value={option} key={ind}>{option}</option>
                     ))}
@@ -62,51 +60,51 @@ const ChatPage = () => {
             <Button variant="primary" size='sm' onClick={()=>{navigate('/')}}>Go Back</Button>
         </Col>
         <Col xs={8} className="d-flex flex-column">
-          <div
-            style={{
-              border: '1px solid #ccc',
-              backgroundColor: 'white',
-              height: '500px',
-              overflowY: 'auto',
-              marginBottom: '10px',
-              padding: '10px',
-              textAlign: 'right',
-            }}
-          >
-            {messages.map((message, index) => (
-              <div key={index} style={{ marginBottom: '10px', textAlign: 'left' }}>
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'row-reverse',
-                    alignItems: 'center',
-                    marginBottom: '5px',
-                  }}
-                >
-                  <div
-                    style={{
-                      background: '#f0f0f0',
-                      padding: '7px',
-                      borderRadius: '50%',
-                      marginLeft: '8px',
-                    }}
-                  >
-                    <BsPerson size={20} />
-                  </div>
-                  <div
-                    style={{
-                      background: '#f0f0f0',
-                      padding: '8px',
-                      borderRadius: '8px',
-                      position: 'relative',
-                    }}
-                  >
-                    {message.text}
-                  </div>
+            <div
+                style={{
+                    border: '1px solid #ccc',
+                    backgroundColor: 'white',
+                    height: '500px',
+                    overflowY: 'auto',
+                    marginBottom: '10px',
+                    padding: '10px',
+                }}
+            >
+                {messages.map((message, index) => (
+                <div key={index} style={{ marginBottom: '10px' }}>
+                    <div
+                        style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        marginBottom: '5px',
+                        flexDirection: message.sender === socketio.id ? 'row-reverse' : 'row',
+                        }}
+                    >
+                        <div
+                        style={{
+                            background: '#f0f0f0',
+                            padding: '7px',
+                            borderRadius: '50%',
+                            marginLeft: message.sender === socketio.id ? '8px' : '0',
+                            marginRight: message.sender === socketio.id ? '0' : '8px',
+                        }}
+                        >
+                        <BsPerson size={20} />
+                        </div>
+                        <div
+                        style={{
+                            background: '#f0f0f0',
+                            padding: '8px',
+                            borderRadius: '8px',
+                            position: 'relative',
+                        }}
+                        >
+                        {message.text}
+                        </div>
+                    </div>
                 </div>
-              </div>
             ))}
-          </div>
+            </div>
           <Form onSubmit={handleSendMessage}>
             <InputGroup className="mb-3">
               <Form.Control

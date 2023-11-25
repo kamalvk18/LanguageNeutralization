@@ -2,7 +2,7 @@ import sys
 from googletrans import Translator
 
 input_stmt = sys.argv[1]
-src_language = 'telugu'
+src_language = sys.argv[2]
 dest_laguage = 'english'
 
 translator = Translator()

@@ -19,9 +19,10 @@ io.on("connection" , (socket) => {
    console.log('We are connected')
 
    socket.on("chat messages", async (chat) => {
+    console.log('new mess', chat)
     
     // Assuming `chat` is an array of messages, and you want to process the last one
-    const command = `${pythonScriptCommand} "${chat.text}"`
+    const command = `${pythonScriptCommand} "${chat.text}" "${chat.lang}"`
 
     exec(command, (scriptError, scriptStdout, scriptStderr) => {
       if (scriptError) {
@@ -40,9 +41,9 @@ io.on("connection" , (socket) => {
     });
   });
 
-   socket.on('disconnect' , ()=> {
-    console.log('disconnected')
-   })
+  socket.on('disconnect', function(reason){
+    console.log('User disconnected because '+reason);
+ });
 })
 
 
