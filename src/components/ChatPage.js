@@ -5,7 +5,7 @@ import { BsPerson } from 'react-icons/bs';
 import { BiUpArrow, BiPhoneCall } from 'react-icons/bi';
 import socketIOClient from "socket.io-client";
 
-const socketio = socketIOClient('http://localhost:5000'); 
+const socketio = socketIOClient.connect('http://localhost:5000'); 
 const ChatPage = () => {
   const navigate=useNavigate();
   const [messages, setMessages] = useState([]);
@@ -14,7 +14,19 @@ const ChatPage = () => {
 
   useEffect(() => {
     // Listen for existing chat messages
-    socketio.on('chat messages', (chat) => {
+    socketio.on('chat messages', async (chat) => {
+      if (chat.sender !== socketio.id){
+        try{
+          const encodedText = encodeURIComponent(chat.text);
+          const url = `http://localhost:5000/runPy?text=${encodedText}&src=${chat.lang}&dest=${language}`
+          const response = await fetch(url)
+          const result = await response.json()
+          console.log(`converted from ${chat.text} to ${result.output}`)
+          chat.text = result.output
+        } catch(err){
+          console.error('Error fetching data:', err)
+        }
+      }
       setMessages(prevMessages => [...prevMessages, chat]);
     });
 
@@ -30,7 +42,7 @@ const ChatPage = () => {
         const message = {
           text: newMessage,
           sender: socketio.id,
-          lang: language, // Identify the sender (you can use different sender names for different instances)
+          lang: language,
         };
   
         // Emit the message to the server

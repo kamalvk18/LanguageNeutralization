@@ -8,6 +8,21 @@ const { exec } = require('child_process');
 app.use(cors());
 const pythonScriptCommand = 'python text_convertor.py ';
 
+app.get('/runPy', (req, res) => {
+  const {text, src, dest} = req.query
+  const command = `${pythonScriptCommand} "${text}" "${src}" "${dest}"`
+
+  exec(command, (error, stdout, stderr) => {
+    if (error) {
+      console.log('error occured ro',error)
+      res.status(500).send({error: error.message});
+    } else {
+      console.log('no error man',stdout)
+      res.send({output: stdout})
+    }
+  })
+})
+
 const server  = http.createServer(app)
 const io = new Server(server , {
     cors:{
@@ -16,29 +31,11 @@ const io = new Server(server , {
 })
 
 io.on("connection" , (socket) => {
-   console.log('We are connected')
+  console.log('We are connected')
 
-   socket.on("chat messages", async (chat) => {
+  socket.on("chat messages", async (chat) => {
     console.log('new mess', chat)
-    
-    // Assuming `chat` is an array of messages, and you want to process the last one
-    const command = `${pythonScriptCommand} "${chat.text}" "${chat.lang}"`
-
-    exec(command, (scriptError, scriptStdout, scriptStderr) => {
-      if (scriptError) {
-        console.error(`Error running script: ${scriptError.message}`);
-        return;
-      }
-  
-      // Process the output from the Python script
-      const result = scriptStdout.trim();
-      console.log(`Result: ${result}`);
-      
-      // Update the text of the last message
-      chat.text = result;
-      // Emit the updated array of messages
-      io.emit('chat messages', chat);
-    });
+    io.emit('chat messages', chat);
   });
 
   socket.on('disconnect', function(reason){
