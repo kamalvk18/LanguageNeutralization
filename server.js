@@ -29,7 +29,11 @@ const server  = http.createServer(app)
 const io = new Server(server , {
     cors:{
         origin:"*"
-    }
+    },
+    reconnection: true, // Allow reconnections
+    reconnectionAttempts: Infinity, // Number of reconnection attempts (Infinity for unlimited)
+    reconnectionDelay: 1000, // Initial delay in milliseconds
+    reconnectionDelayMax: 5000,
 })
 
 io.on("connection" , (socket) => {

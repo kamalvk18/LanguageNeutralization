@@ -5,37 +5,54 @@ import { BsPerson } from 'react-icons/bs';
 import { BiUpArrow, BiPhoneCall } from 'react-icons/bi';
 import socketIOClient from "socket.io-client";
 
-const socketio = socketIOClient.connect('http://localhost:5000'); 
+const socketio = socketIOClient('http://localhost:5000',{
+  reconnection: true, // Allow reconnections
+  reconnectionAttempts: Infinity, // Number of reconnection attempts (Infinity for unlimited)
+  reconnectionDelay: 1000, // Initial delay in milliseconds
+  reconnectionDelayMax: 5000,
+});
+
 const ChatPage = () => {
   const navigate=useNavigate();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
-  const [language, setLanguage] = useState('english')
+  const [language, setLanguage] = useState('')
 
   useEffect(() => {
-    // Listen for existing chat messages
-    socketio.on('chat messages', async (chat) => {
-      if (chat.sender !== socketio.id){
-        try{
+    const handleChatMessages = async (chat) => {
+      let modifiedChat = { ...chat };
+      if (chat.sender !== socketio.id) {
+        try {
           const encodedText = encodeURIComponent(chat.text);
           const url = `http://localhost:5000/runPy?text=${encodedText}&src=${chat.lang}&dest=${language}`
           console.log(url)
           const response = await fetch(url)
           const result = await response.json()
           console.log(`converted from ${chat.text} to ${result.output}`)
-          chat.text = result.output
-        } catch(err){
+          modifiedChat = { ...modifiedChat, text: result.output };
+        } catch (err) {
           console.error('Error fetching data:', err)
         }
       }
-      setMessages(prevMessages => [...prevMessages, chat]);
-    });
+      setMessages(prevMessages => [...prevMessages, modifiedChat]);
+    };
+  
+    // Listen for existing chat messages
+    socketio.on('chat messages', handleChatMessages);
+  
+    // Clean up the socket connection when the component is unmounted
+    return () => {
+      socketio.off('chat messages', handleChatMessages);
+    };
+  }, [language]);
+  
 
+  useEffect(()=>{
     return () => {
       // Clean up the socket connection when the component is unmounted
       socketio.disconnect();
     };
-  }, []);
+  }, [])
 
     const handleSendMessage = (e) => {
       e.preventDefault();
