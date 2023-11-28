@@ -19,6 +19,7 @@ const ChatPage = () => {
         try{
           const encodedText = encodeURIComponent(chat.text);
           const url = `http://localhost:5000/runPy?text=${encodedText}&src=${chat.lang}&dest=${language}`
+          console.log(url)
           const response = await fetch(url)
           const result = await response.json()
           console.log(`converted from ${chat.text} to ${result.output}`)
@@ -63,7 +64,10 @@ const ChatPage = () => {
             <h2>Language Preferences</h2>
             <Form.Group className="my-3">
                 <Form.Label>Choose your language</Form.Label>
-                <Form.Select value={language} onChange={e=>setLanguage(e.target.value)}>
+                <Form.Select value={language} onChange={e=>{
+                  console.log(`Changing language to ${e.target.value}`)
+                  setLanguage(e.target.value)
+                  }}>
                     {availableLanguages.map((option,ind) => (
                     <option value={option} key={ind}>{option}</option>
                     ))}
