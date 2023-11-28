@@ -1,9 +1,10 @@
 import sys
+import urllib
 from googletrans import Translator
 
 input_stmt = sys.argv[1]
 src_language = sys.argv[2]
-dest_laguage = 'english'
+dest_laguage = sys.argv[3] if len(sys.argv)>3 else 'english'
 
 translator = Translator()
 
@@ -13,4 +14,5 @@ language_code = { 'afrikaans':'af', 'albanian':'sq', 'amharic':'am', 'arabic':'a
 translated_text = translator.translate(input_stmt, src=language_code[src_language], dest=language_code[dest_laguage])
 final = translated_text.text
 
+final = urllib.parse.quote(final)
 print(final)

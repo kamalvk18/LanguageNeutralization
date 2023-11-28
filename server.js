@@ -11,14 +11,16 @@ const pythonScriptCommand = 'python text_convertor.py ';
 app.get('/runPy', (req, res) => {
   const {text, src, dest} = req.query
   const command = `${pythonScriptCommand} "${text}" "${src}" "${dest}"`
+  console.log(`Changing the text from ${src} to ${dest}`)
 
   exec(command, (error, stdout, stderr) => {
     if (error) {
       console.log('error occured ro',error)
       res.status(500).send({error: error.message});
     } else {
-      console.log('no error man',stdout)
-      res.send({output: stdout})
+      const decodedOutput = decodeURIComponent(stdout)
+      res.setHeader('Content-Type', 'application/json; charset=utf-8');
+      res.send(JSON.stringify({output: decodedOutput}))
     }
   })
 })
